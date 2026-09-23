@@ -1,0 +1,15 @@
+# Configuration lychee (vérification des liens) par défaut de l'organisation
+# Kanibal Studio. Utilisée par le workflow réutilisable docs-quality.yml
+# lorsque le dépôt appelant n'a pas la sienne.
+no_progress = true
+max_retries = 3
+timeout = 20
+max_concurrency = 8
+# Réponses acceptées : succès, et 429 (limitation de débit, pas un lien mort).
+accept = ["200..=299", "429"]
+# Adresses locales et privées ignorées (exemples de documentation).
+exclude_all_private = true
+exclude = [
+  # Pages GitHub nécessitant une session (réglages, nouveaux avis de sécurité).
+  "^https://github\\.com/.+/(settings|issues/new|security/advisories/new)",
+]

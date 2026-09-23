@@ -1,0 +1,20 @@
+name: ❓ Question ou demande d'aide
+description: Une question d'utilisation à laquelle la documentation ne répond pas.
+title: "[Question] "
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Vérifiez d'abord le README du dépôt concerné et les issues existantes : la réponse s'y trouve peut-être déjà.
+  - type: textarea
+    id: question
+    attributes:
+      label: Votre question
+    validations:
+      required: true
+  - type: textarea
+    id: contexte
+    attributes:
+      label: Contexte
+      description: Ce que vous essayez de faire, ce que vous avez déjà tenté, la version utilisée.

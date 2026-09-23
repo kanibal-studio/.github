@@ -17,7 +17,16 @@ conformité du démarchage, données publiques, automatisation éditoriale.
 
 - [demarchage-consent](https://github.com/kanibal-studio/demarchage-consent) — garde d'âge du décret n° 2026-662 relatif aux démarchages : bibliothèque pure de contrôle d'âge, extraction de la table officielle, sans dépendance réseau
 
-## Licence et conduite
+## Contribuer
+
+Bugs, idées et questions passent par les issues du dépôt concerné, avec les modèles
+proposés. Les dépôts de l'organisation partagent un
+[guide de contribution](../CONTRIBUTING.md),
+un [code de conduite](../CODE_OF_CONDUCT.md),
+une [politique de sécurité](../SECURITY.md)
+et une [page d'aide](../SUPPORT.md).
+
+## Licence
 
 Les outils de cette organisation sont publiés sous licence MIT, sauf mention
 contraire dans leur dépôt. Chaque dépôt porte ses propres tests et sa propre

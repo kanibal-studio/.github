@@ -1,0 +1,19 @@
+# CI de ce dépôt : il consomme le workflow réutilisable docs-quality.yml
+# (Markdown, YAML, workflows GitHub Actions, liens), ce qui sert aussi de test
+# permanent du workflow proposé aux autres dépôts de l'organisation.
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  docs-quality:
+    name: Qualité documentaire
+    uses: ./.github/workflows/docs-quality.yml

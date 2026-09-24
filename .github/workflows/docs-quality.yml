@@ -51,10 +51,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Récupérer le dépôt
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Récupérer la configuration par défaut de l'organisation
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           repository: kanibal-studio/.github
           path: .org-defaults
@@ -80,7 +80,7 @@ jobs:
           rm -rf .org-defaults
 
       - name: markdownlint-cli2
-        uses: DavidAnson/markdownlint-cli2-action@v24
+        uses: DavidAnson/markdownlint-cli2-action@21c1be1b93ad9ed58fa840aacc3f279cde2a72ff # v24
         with:
           config: ${{ steps.config.outputs.path }}
           globs: ${{ inputs.markdown-globs }}
@@ -91,10 +91,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Récupérer le dépôt
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Récupérer la configuration par défaut de l'organisation
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           repository: kanibal-studio/.github
           path: .org-defaults
@@ -118,7 +118,7 @@ jobs:
           echo "path=$cfg" >> "$GITHUB_OUTPUT"
 
       - name: Installer Python
-        uses: actions/setup-python@v7
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
         with:
           python-version: "3.x"
 
@@ -136,15 +136,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Récupérer le dépôt
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Installer actionlint
         shell: bash
         env:
           ACTIONLINT_VERSION: ${{ inputs.actionlint-version }}
+        # Script d'installation tiré du TAG de la version demandée, jamais de la
+        # branche main (mutable) ; version validée avant de construire l'URL.
         run: |
-          bash <(curl -fsSL https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash) \
-            "$ACTIONLINT_VERSION" "$RUNNER_TEMP"
+          set -euo pipefail
+          if ! [[ "$ACTIONLINT_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::actionlint-version invalide : '$ACTIONLINT_VERSION' (attendu X.Y.Z)"
+            exit 1
+          fi
+          curl -fsSL -o "$RUNNER_TEMP/download-actionlint.bash" \
+            "https://raw.githubusercontent.com/rhysd/actionlint/v${ACTIONLINT_VERSION}/scripts/download-actionlint.bash"
+          bash "$RUNNER_TEMP/download-actionlint.bash" "$ACTIONLINT_VERSION" "$RUNNER_TEMP"
 
       - name: actionlint
         shell: bash
@@ -160,10 +168,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Récupérer le dépôt
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Récupérer la configuration par défaut de l'organisation
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           repository: kanibal-studio/.github
           path: .org-defaults
@@ -183,7 +191,7 @@ jobs:
           rm -rf .org-defaults
 
       - name: lychee
-        uses: lycheeverse/lychee-action@v2
+        uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2
         with:
           lycheeConfig: ${{ steps.config.outputs.path }}
           args: --no-progress './**/*.md'

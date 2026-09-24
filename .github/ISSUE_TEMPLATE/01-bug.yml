@@ -1,0 +1,56 @@
+name: 🐛 Rapport de bug
+description: Un comportement incorrect, une erreur ou une régression.
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Merci de prendre le temps de signaler ce problème. Plus le rapport est précis, plus vite il sera corrigé.
+  - type: textarea
+    id: description
+    attributes:
+      label: Description du problème
+      description: Que se passe-t-il, et qu'attendiez-vous à la place ?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Étapes pour reproduire
+      description: La séquence minimale qui déclenche le problème.
+      placeholder: |
+        1. …
+        2. …
+        3. …
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version ou commit
+      description: Version publiée, tag ou SHA du commit concerné.
+      placeholder: "ex. 1.2.0 ou a1b2c3d"
+    validations:
+      required: true
+  - type: textarea
+    id: environnement
+    attributes:
+      label: Environnement
+      description: Système, langage et runtime (avec versions), configuration pertinente.
+      placeholder: "ex. Ubuntu 24.04, Python 3.12, Node 22"
+  - type: textarea
+    id: journaux
+    attributes:
+      label: Journaux, messages d'erreur, captures
+      description: Collez ici les sorties utiles, elles seront formatées automatiquement.
+      render: shell
+  - type: checkboxes
+    id: verifications
+    attributes:
+      label: Vérifications
+      options:
+        - label: J'ai cherché une issue existante décrivant le même problème.
+          required: true
+        - label: J'ai retiré toute donnée personnelle ou confidentielle (identifiants, numéros de téléphone, clés).
+          required: true

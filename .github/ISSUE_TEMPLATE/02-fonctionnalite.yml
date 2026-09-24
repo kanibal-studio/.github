@@ -1,0 +1,41 @@
+name: ✨ Proposition de fonctionnalité
+description: Une idée d'amélioration ou un besoin non couvert.
+title: "[Proposition] "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: probleme
+    attributes:
+      label: Problème à résoudre
+      description: Quel besoin concret cette proposition adresse-t-elle ? Pour qui ?
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Solution envisagée
+      description: Comment imaginez-vous la fonctionnalité (comportement, interface, exemple d'utilisation) ?
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considérées
+      description: Contournements actuels, autres approches possibles et pourquoi elles conviennent moins.
+  - type: dropdown
+    id: contribution
+    attributes:
+      label: Souhaitez-vous contribuer à l'implémentation ?
+      options:
+        - Oui, je peux proposer une PR
+        - Oui, avec un peu d'accompagnement
+        - Non, je propose seulement l'idée
+    validations:
+      required: true
+  - type: checkboxes
+    id: verifications
+    attributes:
+      label: Vérifications
+      options:
+        - label: J'ai cherché une issue existante portant sur la même idée.
+          required: true

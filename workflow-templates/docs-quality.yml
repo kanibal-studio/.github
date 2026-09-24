@@ -1,0 +1,24 @@
+# Modèle de workflow proposé dans l'onglet « Actions » des dépôts de
+# l'organisation. Il délègue au workflow réutilisable de kanibal-studio/.github.
+
+name: Qualité documentaire
+
+on:
+  push:
+    branches: [$default-branch]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  docs-quality:
+    name: Qualité documentaire
+    uses: kanibal-studio/.github/.github/workflows/docs-quality.yml@main
+    # Entrées facultatives (valeurs par défaut indiquées) :
+    # with:
+    #   markdown-globs: "**/*.md"
+    #   lint-yaml: true
+    #   lint-workflows: true
+    #   check-links: true

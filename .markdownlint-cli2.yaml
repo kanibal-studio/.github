@@ -1,0 +1,16 @@
+# Configuration markdownlint-cli2 par défaut de l'organisation Kanibal Studio.
+# Utilisée par le workflow réutilisable docs-quality.yml lorsque le dépôt
+# appelant n'a pas la sienne. Référence des règles :
+# https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md
+config:
+  default: true
+  # Longueur de ligne : la prose n'est pas coupée artificiellement.
+  MD013: false
+  # Titres identiques autorisés dans des sections différentes.
+  MD024:
+    siblings_only: true
+  # Première ligne pas forcément un titre (modèles de PR, extraits).
+  MD041: false
+ignores:
+  - node_modules/
+  - .org-defaults/

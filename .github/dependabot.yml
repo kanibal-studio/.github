@@ -1,0 +1,19 @@
+# Mises à jour automatiques des actions GitHub utilisées par ce dépôt,
+# regroupées en une seule PR hebdomadaire.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "07:00"
+      timezone: Europe/Madrid
+    labels:
+      - dependencies
+    commit-message:
+      prefix: "ci"
+    groups:
+      github-actions:
+        patterns:
+          - "*"

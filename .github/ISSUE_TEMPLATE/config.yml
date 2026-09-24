@@ -1,0 +1,13 @@
+# Les issues vierges sont désactivées : chaque demande passe par un modèle,
+# ce qui garantit les informations minimales pour agir.
+blank_issues_enabled: false
+contact_links:
+  - name: 🔒 Signaler une faille de sécurité
+    url: https://github.com/kanibal-studio/.github/blob/main/SECURITY.md
+    about: Ne décrivez jamais une vulnérabilité dans une issue publique. Suivez la politique de sécurité.
+  - name: 💬 Obtenir de l'aide
+    url: https://github.com/kanibal-studio/.github/blob/main/SUPPORT.md
+    about: Où et comment poser une question sur les outils de Kanibal Studio.
+  - name: 🌐 Altavista360 (demandes commerciales)
+    url: https://altavista360.com
+    about: Pour les demandes clients ou commerciales, hors développement open source.

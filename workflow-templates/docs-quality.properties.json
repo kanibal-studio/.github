@@ -1,0 +1,5 @@
+{
+  "name": "Qualité documentaire (Kanibal Studio)",
+  "description": "Vérifie le Markdown, le YAML, les workflows GitHub Actions et les liens avec le workflow réutilisable de l'organisation.",
+  "filePatterns": ["README.md", "*.md"]
+}

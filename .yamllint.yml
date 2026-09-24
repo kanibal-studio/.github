@@ -1,0 +1,22 @@
+# Configuration yamllint par défaut de l'organisation Kanibal Studio.
+# Utilisée par le workflow réutilisable docs-quality.yml lorsque le dépôt
+# appelant n'a pas la sienne.
+extends: default
+
+ignore: |
+  node_modules/
+  .org-defaults/
+
+rules:
+  document-start: disable
+  line-length:
+    max: 120
+    allow-non-breakable-inline-mappings: true
+  truthy:
+    # « on: » des workflows GitHub Actions est une clé, pas un booléen.
+    check-keys: false
+  comments:
+    min-spaces-from-content: 1
+  indentation:
+    spaces: 2
+    indent-sequences: consistent

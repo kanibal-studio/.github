@@ -1,0 +1,198 @@
+# Workflow réutilisable de Kanibal Studio : qualité documentaire et validité
+# des fichiers de configuration (Markdown, YAML, workflows GitHub Actions, liens).
+#
+# Appel depuis n'importe quel dépôt de l'organisation :
+#
+#   jobs:
+#     docs-quality:
+#       uses: kanibal-studio/.github/.github/workflows/docs-quality.yml@main
+#
+# Chaque vérification est désactivable par une entrée booléenne. Si le dépôt
+# appelant n'a pas sa propre configuration (.markdownlint-cli2.yaml,
+# .yamllint.yml, lychee.toml), celle de ce dépôt est utilisée par défaut.
+
+name: Qualité documentaire
+
+on:
+  workflow_call:
+    inputs:
+      markdown-globs:
+        description: Globs markdownlint-cli2, un par ligne (préfixe « # » pour exclure)
+        type: string
+        required: false
+        default: "**/*.md"
+      lint-yaml:
+        description: Valider les fichiers YAML avec yamllint
+        type: boolean
+        required: false
+        default: true
+      lint-workflows:
+        description: Valider les workflows GitHub Actions avec actionlint
+        type: boolean
+        required: false
+        default: true
+      check-links:
+        description: Vérifier les liens des fichiers Markdown avec lychee
+        type: boolean
+        required: false
+        default: true
+      actionlint-version:
+        description: Version d'actionlint à installer
+        type: string
+        required: false
+        default: "1.7.12"
+
+permissions:
+  contents: read
+
+jobs:
+  markdown:
+    name: Markdown (markdownlint)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupérer le dépôt
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Récupérer la configuration par défaut de l'organisation
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          repository: kanibal-studio/.github
+          path: .org-defaults
+
+      - name: Choisir la configuration (dépôt appelant, sinon organisation)
+        id: config
+        shell: bash
+        run: |
+          own=""
+          for f in .markdownlint-cli2.yaml .markdownlint-cli2.jsonc .markdownlint-cli2.cjs \
+                   .markdownlint-cli2.mjs .markdownlint.yml .markdownlint.yaml \
+                   .markdownlint.json .markdownlint.jsonc; do
+            if [ -f "$f" ]; then own="$f"; break; fi
+          done
+          if [ -n "$own" ]; then
+            echo "Configuration markdownlint du dépôt appelant utilisée ($own)."
+            echo "path=" >> "$GITHUB_OUTPUT"
+          else
+            cp .org-defaults/.markdownlint-cli2.yaml "$RUNNER_TEMP/markdownlint-cli2.yaml"
+            echo "Configuration markdownlint par défaut de l'organisation utilisée."
+            echo "path=$RUNNER_TEMP/markdownlint-cli2.yaml" >> "$GITHUB_OUTPUT"
+          fi
+          rm -rf .org-defaults
+
+      - name: markdownlint-cli2
+        uses: DavidAnson/markdownlint-cli2-action@21c1be1b93ad9ed58fa840aacc3f279cde2a72ff # v24
+        with:
+          config: ${{ steps.config.outputs.path }}
+          globs: ${{ inputs.markdown-globs }}
+
+  yaml:
+    name: YAML (yamllint)
+    if: ${{ inputs.lint-yaml }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupérer le dépôt
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Récupérer la configuration par défaut de l'organisation
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          repository: kanibal-studio/.github
+          path: .org-defaults
+
+      - name: Choisir la configuration (dépôt appelant, sinon organisation)
+        id: config
+        shell: bash
+        run: |
+          cfg=""
+          for f in .yamllint.yml .yamllint.yaml .yamllint; do
+            if [ -f "$f" ]; then cfg="$f"; break; fi
+          done
+          if [ -n "$cfg" ]; then
+            echo "Configuration yamllint du dépôt appelant utilisée ($cfg)."
+          else
+            cp .org-defaults/.yamllint.yml "$RUNNER_TEMP/yamllint.yml"
+            cfg="$RUNNER_TEMP/yamllint.yml"
+            echo "Configuration yamllint par défaut de l'organisation utilisée."
+          fi
+          rm -rf .org-defaults
+          echo "path=$cfg" >> "$GITHUB_OUTPUT"
+
+      - name: Installer Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
+        with:
+          python-version: "3.x"
+
+      - name: Installer yamllint
+        run: python -m pip install --upgrade pip yamllint
+
+      - name: yamllint
+        env:
+          YAMLLINT_CONFIG: ${{ steps.config.outputs.path }}
+        run: yamllint --strict -c "$YAMLLINT_CONFIG" .
+
+  workflows:
+    name: Workflows GitHub Actions (actionlint)
+    if: ${{ inputs.lint-workflows }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupérer le dépôt
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Installer actionlint
+        shell: bash
+        env:
+          ACTIONLINT_VERSION: ${{ inputs.actionlint-version }}
+        # Script d'installation tiré du TAG de la version demandée, jamais de la
+        # branche main (mutable) ; version validée avant de construire l'URL.
+        run: |
+          set -euo pipefail
+          if ! [[ "$ACTIONLINT_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::actionlint-version invalide : '$ACTIONLINT_VERSION' (attendu X.Y.Z)"
+            exit 1
+          fi
+          curl -fsSL -o "$RUNNER_TEMP/download-actionlint.bash" \
+            "https://raw.githubusercontent.com/rhysd/actionlint/v${ACTIONLINT_VERSION}/scripts/download-actionlint.bash"
+          bash "$RUNNER_TEMP/download-actionlint.bash" "$ACTIONLINT_VERSION" "$RUNNER_TEMP"
+
+      - name: actionlint
+        shell: bash
+        run: |
+          "$RUNNER_TEMP/actionlint" -color
+          if compgen -G "workflow-templates/*.y*ml" > /dev/null; then
+            "$RUNNER_TEMP/actionlint" -color workflow-templates/*.y*ml
+          fi
+
+  links:
+    name: Liens (lychee)
+    if: ${{ inputs.check-links }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupérer le dépôt
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Récupérer la configuration par défaut de l'organisation
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          repository: kanibal-studio/.github
+          path: .org-defaults
+
+      - name: Choisir la configuration (dépôt appelant, sinon organisation)
+        id: config
+        shell: bash
+        run: |
+          if [ -f lychee.toml ]; then
+            echo "Configuration lychee du dépôt appelant utilisée."
+            echo "path=lychee.toml" >> "$GITHUB_OUTPUT"
+          else
+            cp .org-defaults/lychee.toml "$RUNNER_TEMP/lychee.toml"
+            echo "Configuration lychee par défaut de l'organisation utilisée."
+            echo "path=$RUNNER_TEMP/lychee.toml" >> "$GITHUB_OUTPUT"
+          fi
+          rm -rf .org-defaults
+
+      - name: lychee
+        uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2
+        with:
+          lycheeConfig: ${{ steps.config.outputs.path }}
+          args: --no-progress './**/*.md'
+          fail: true

@@ -15,7 +15,9 @@ conformité du démarchage, données publiques, automatisation éditoriale.
 
 ## Nos outils
 
-- [demarchage-consent](https://github.com/kanibal-studio/demarchage-consent) — garde d'âge du décret n° 2026-662 relatif aux démarchages : bibliothèque pure de contrôle d'âge, extraction de la table officielle, sans dépendance réseau
+- [demarchage-consent](https://github.com/kanibal-studio/demarchage-consent) — évalue les dates de recueil et de révocation fournies en entrée pour retourner un état technique de consentement ; fonction pure sans dépendance réseau, sans extraction de table officielle ni certification de conformité.
+- [least-cost-capable](https://github.com/kanibal-studio/least-cost-capable) — compare les rangs de coût déclarés d'un catalogue après vérification des capacités, disponibilités et autorisations ; aucun appel fournisseur, aucun agent lancé, aucune économie réelle garantie.
+- [agent-collab-kit](https://github.com/kanibal-studio/agent-collab-kit) — boîte aux lettres locale, accusés de réception et baux coopératifs pour des agents sur une même machine ; Python standard et SQLite, sans authentification ni protection automatique des fichiers. Inclut une [méthode de progression supervisée des agents](https://github.com/kanibal-studio/agent-collab-kit/blob/main/examples/AGENT_IMPROVEMENT.md) et un exemple COLLAB.md.
 
 ## Contribuer
 
